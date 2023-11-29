@@ -122,7 +122,6 @@ class flavor(models.Model):
     flavor_id = models.CharField(max_length=255)
 
     class Meta:
-        managed = False
         db_table = 'flavor'
 
 class images(models.Model):
@@ -130,19 +129,20 @@ class images(models.Model):
     images_id = models.CharField(max_length=255)
 
     class Meta:
-        managed = False
         db_table = 'images'
 
 class instance(models.Model):
     name = models.CharField(max_length=255)
     status = models.BooleanField(default=False)
     tujuan = models.CharField(max_length=255)
-    fk_flavor = models.ForeignKey(flavor, models.DO_NOTHING)
-    fk_images = models.ForeignKey(images, models.DO_NOTHING)
-    fk_user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    fk_flavor = models.ForeignKey(flavor, models.DO_NOTHING, blank=True, null=True)
+    fk_images = models.ForeignKey(images, models.DO_NOTHING, blank=True, null=True)
+    # fk_user = models.ForeignKey(AuthUser, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'instance'
+
+    def __str__(self):
+        return self.name
 
 

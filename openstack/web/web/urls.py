@@ -15,7 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from openstack import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('dashboard', views.dashboard, name='dashboard'),
+    path('add_instance', views.add_instance, name='add_instance'), 
+    path('edit_instance/<int:pk>/', views.edit_instance, name='edit_instance')
 ]
