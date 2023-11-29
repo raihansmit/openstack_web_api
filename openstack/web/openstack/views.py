@@ -9,12 +9,29 @@ from openstack.forms import instanceForm
 from openstack.forms import instanceFormMahasiswa
 
 # Create your views here.
+def login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('dashboard')
+        else:
+            messages.error(request, 'Invalid username or password.')
+    return render(request, 'login.html')
+
 # Dashboard
-
+@login_required(login_url=login)
 def dashboard(request):
-    data_dashboard = instance.objects.all()
-    return render(request, 'dashboard.html', {'data_dashboard': data_dashboard})
+    if request.user.is_staff:
+        data_dashboard = instance.objects.all()
+        return render(request, 'dashboard.html', {'data_dashboard': data_dashboard})
+    else:
+        data_dashboard = instance.objects.filter(user=request.user.id)
+        return render(request, 'dashboard.html', {'data_dashboard': data_dashboard})
 
+@login_required(login_url=login)
 def add_instance(request):
     if request.user.is_staff:
         form = instanceForm(request.POST or None)
@@ -28,6 +45,7 @@ def add_instance(request):
             return redirect('/dashboard')
     return render(request, 'add_form.html', {'form': form})
 
+@login_required(login_url=login)
 def edit_instance(request, pk):
     edit_instance = get_object_or_404(instance, pk=pk)
     form = instanceForm(request.POST or None, instance=edit_instance)

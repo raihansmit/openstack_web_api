@@ -21,5 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('dashboard', views.dashboard, name='dashboard'),
     path('add_instance', views.add_instance, name='add_instance'), 
-    path('edit_instance/<int:pk>/', views.edit_instance, name='edit_instance')
+    path('edit_instance/<int:pk>/', views.edit_instance, name='edit_instance'), 
+    path('', views.login, name='login')
 ]
