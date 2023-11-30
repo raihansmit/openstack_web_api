@@ -123,6 +123,8 @@ class flavor(models.Model):
 
     class Meta:
         db_table = 'flavor'
+    def __str__(self):
+        return self.name
 
 class images(models.Model):
     name = models.CharField(max_length=255)
@@ -130,6 +132,8 @@ class images(models.Model):
 
     class Meta:
         db_table = 'images'
+    def __str__(self):
+        return self.name
 
 class instance(models.Model):
     name = models.CharField(max_length=255)
@@ -137,12 +141,11 @@ class instance(models.Model):
     tujuan = models.CharField(max_length=255)
     fk_flavor = models.ForeignKey(flavor, models.DO_NOTHING, blank=True, null=True)
     fk_images = models.ForeignKey(images, models.DO_NOTHING, blank=True, null=True)
-    # fk_user = models.ForeignKey(AuthUser, models.DO_NOTHING, blank=True, null=True)
+    fk_user = models.ForeignKey(AuthUser, on_delete=models.CASCADE, blank=True, null=True)
 
     class Meta:
         db_table = 'instance'
 
     def __str__(self):
         return self.name
-
 

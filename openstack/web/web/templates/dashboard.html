@@ -65,7 +65,9 @@
                                                         <th scope="col">Flavor</th> 
                                                         <th scope="col">Images</th>
                                                         <th scope="col">Status</th>
+                                                        {% if user.is_staff %}
                                                         <th scope="col">Action</th>
+                                                        {% endif %}
                                                 </tr>  
                                         </thead> 
                                 <tbody>  
@@ -81,8 +83,10 @@
                                                         {% endif %}
                                                 </td>
                                                 <td>  
+                                                        {% if user.is_staff %}
                                                         <a href="/edit_instance/{{ instances.id }}"><span class="btn btn-warning" >Edit</span></a>  
-                                                        <a href="/delete_instance/{{ instances.id }}"><span class="btn btn-danger">Delete</a>  
+                                                        <a href="/delete_instance/{{ instance.id }}"><span class="btn btn-danger">Delete</a> 
+                                                        {% endif %} 
                                                 </td>
                                         
                                         </tr>

@@ -1,7 +1,6 @@
 from django import forms
 from openstack.models import instance
 
-
 class instanceForm(forms.ModelForm):
     class Meta:
         model = instance

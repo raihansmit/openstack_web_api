@@ -5,11 +5,14 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Count
 from django.contrib import messages
 from openstack.models import instance
+from openstack.models import AuthUser
 from openstack.forms import instanceForm
 from openstack.forms import instanceFormMahasiswa
+import pdb
 
 # Create your views here.
-def login(request):
+def login_view(request):
+    # pdb.set_trace()
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -21,17 +24,23 @@ def login(request):
             messages.error(request, 'Invalid username or password.')
     return render(request, 'login.html')
 
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+
+
 # Dashboard
-@login_required(login_url=login)
+@login_required(login_url='login')
 def dashboard(request):
     if request.user.is_staff:
         data_dashboard = instance.objects.all()
-        return render(request, 'dashboard.html', {'data_dashboard': data_dashboard})
+        context = {'data_dashboard': data_dashboard}
     else:
-        data_dashboard = instance.objects.filter(user=request.user.id)
-        return render(request, 'dashboard.html', {'data_dashboard': data_dashboard})
+        data_dashboard = instance.objects.filter(fk_user=request.user.id)
+        context = {'data_dashboard': data_dashboard}
+    return render(request, 'dashboard.html', context)
 
-@login_required(login_url=login)
+@login_required(login_url='login')
 def add_instance(request):
     if request.user.is_staff:
         form = instanceForm(request.POST or None)
@@ -41,11 +50,12 @@ def add_instance(request):
     else:
         form = instanceFormMahasiswa(request.POST or None)
         if form.is_valid():
+            form.instance.AuthUser = request.user.id
             form.save()
             return redirect('/dashboard')
     return render(request, 'add_form.html', {'form': form})
 
-@login_required(login_url=login)
+@login_required(login_url='login')
 def edit_instance(request, pk):
     edit_instance = get_object_or_404(instance, pk=pk)
     form = instanceForm(request.POST or None, instance=edit_instance)
